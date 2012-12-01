@@ -62,11 +62,11 @@ class FoxHole
   end
 
   def self.backup_dir
-    @@backup_dir ||= (Proc.new {
+    @@backup_dir ||= begin
       datetime = DateTime::now
       backup_date = "#{datetime.year}.#{datetime.month}.#{datetime.day}"
       backup_dir = Pathname.new(File.expand_path(config[:backup_dir])) + backup_date
-    }).call # what is this javascript?
+    end
   end
 
   def self.sessionstore

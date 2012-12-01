@@ -1,0 +1,6 @@
+= foxhole
+
+Describe your project here
+
+:include:foxhole.rdoc
+
