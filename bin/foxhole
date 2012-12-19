@@ -11,7 +11,7 @@ end
 
 include GLI::App
 
-program_desc 'Describe your application here'
+program_desc "Backup and restore Firefox's sessionstore, so that you can recover your tab groups (panoramas) after a crash."
 
 version Foxhole::VERSION
 
@@ -26,13 +26,13 @@ flag [:f,:flagname]
 desc 'verbose'
 switch [:v, :verbose]
 
-desc 'Describe backup here'
-arg_name 'Describe arguments to backup here'
+desc 'Backup the current sessionstore'
+arg_name '' # backup take no particular args
 command :backup do |c|
 
-  c.desc 'Back up today\'s session store to a particular folder in the foxhole'
-  c.arg_name 'DIRECTORY'
-  c.flag [:d, :directory]
+  c.desc 'Give the current sessionstore a special name. You can restore it by using restore -n'
+  c.arg_name 'Name'
+  c.flag [:n, :name]
 
   c.action do |global_options,options,args|
 
@@ -48,12 +48,25 @@ command :backup do |c|
   end
 end
 
-desc 'Describe restore here'
-arg_name 'Describe arguments to restore here'
+desc 'Restore the most recent sessionstore'
+arg_name '' # restore has no particular args
 command :restore do |c|
+
+  c.desc 'Restore the sessionstore with the given name, instead of the most recent sessionstore.'
+  c.arg_name 'Name'
+  c.flag [:n, :name]
+
+  c.desc 'Restore the sessionstore from the given date. Restore by date is exclusive with restore by name.'
+  c.arg_name 'Date'
+  c.flag [:d, :date]
+
+  c.desc 'Restore the sessionstore from the given hour. If a date or name is also specified, both hour and date will be used.'
+  c.arg_name 'Hour'
+  c.flag [:h, :hour]
+
   c.action do |global_options,options,args|
 
-    Foxhole.restore
+    Foxhole.restore(options)
     puts "restore command ran"
   end
 end
