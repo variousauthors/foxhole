@@ -11,6 +11,7 @@ spec = Gem::Specification.new do |s|
 # Add your other files here if you make them
   s.files = %w(
 bin/foxhole
+lib/foxhole/commands.rb
 lib/foxhole/version.rb
 lib/foxhole.rb
   )
