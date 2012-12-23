@@ -56,7 +56,7 @@ command :restore do |c|
   c.arg_name 'Name'
   c.flag [:n, :name]
 
-  c.desc 'Restore the sessionstore from the given date. Restore by date is exclusive with restore by name.'
+  c.desc 'Restore the sessionstore from the given (YYYY/MM/DD) date. Restore by date is exclusive with restore by name.'
   c.arg_name 'Date'
   c.flag [:d, :date]
 

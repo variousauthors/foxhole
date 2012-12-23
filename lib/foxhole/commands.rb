@@ -32,20 +32,33 @@ module Foxhole
     if options[:n] && options[:d]
       puts "Restoring by name conflicts with restoring by date\n \
               run foxhole restore with either -n or -d but not both"
+      return
     end
 
-    unless options[:n]
-      logger.debug('options :n nil')
-      # find the most recent folder by sorting them and taking the last
-      foxhole_dirs = Pathname.new(backup_dir.parent).entries
-      chronological_dirs = foxhole_dirs.select do |item| 
-        item.to_path =~ /.*\/\d{4}\.\d{2}\.\d{2}/
-      end
+    salient_backup_dir = if options[:n]
+                           backup_dir(options[:n])
+                         elsif options[:d]
+                           # first parse the date time
+                           datetime = DateTime.parse(options[:d])
+                           backup_date = datetime.strftime("%Y.%m.%d")
 
-      salient_backup_dir = chronological_dirs.sort.last
-    else
-      salient_backup_dir = backup_dir(options[:n])
-    end
+                           # then pass it to backup_dir as a name
+                           backup_dir(backup_date)
+
+                         else
+                           logger.debug('options :n nil')
+                           # find the most recent folder by sorting them and taking the last
+                           foxhole_dirs = Pathname.new(backup_dir.parent).entries
+
+                           logger.debug('foxhole_dirs: ' + foxhole_dirs.inspect)
+                           chronological_dirs = foxhole_dirs.select do |item| 
+                             logger.debug('item: ' + item.to_path.inspect)
+                             nil != (item.to_path =~ /^\d{4}\.\d{2}\.\d{2}$/)
+                           end
+                           logger.debug('chronological_dirs: ' + chronological_dirs.inspect)
+
+                           Pathname.new(backup_dir.parent) + chronological_dirs.sort.last
+                         end
 
     puts "salient_backup_dir: " + salient_backup_dir.inspect
 
@@ -67,6 +80,8 @@ module Foxhole
       :backup_dir => "~/.foxhole" }
   end
 
+  # returns a pathname object that points to the given directory,
+  # or to the directory with the most recent date
   def Foxhole.backup_dir(directory=nil)
     logger.debug('in backup_dir with ' + directory.to_s)
     @@backup_dir ||= begin
