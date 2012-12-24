@@ -65,6 +65,8 @@ command :restore do |c|
 
   c.action do |global_options,options,args|
 
+    Foxhole.logger.level = Logger::INFO unless global_options[:v]
+    Foxhole.logger.debug(options)
     Foxhole.restore(options)
     puts "restore command ran"
   end
@@ -86,9 +88,20 @@ post do |global,command,options,args|
 end
 
 on_error do |exception|
-  # Error logic here
-  # return false to skip default error handling
-  true
+  if exception.methods.include?(:status)
+    case exception.status.to_int
+    when 2 then STDERR::puts "There was no sessionstore data to backup..."
+    when 3 then STDERR::puts "--name and --date are mutually exclusive. Maybe run `foxhole restore --help` ?"
+    when 4 then STDERR::puts "There is no backup with the given name."
+    else STDERR::puts exception.message
+    end
+  else
+    STDERR::puts "You found a new bug: " 
+    STDERR::puts "  " + exception.message
+    STDERR::puts "  " + exception.inspect
+  end
+
+  false
 end
 
 exit run(ARGV)

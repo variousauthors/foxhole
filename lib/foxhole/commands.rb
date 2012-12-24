@@ -8,7 +8,7 @@ module Foxhole
   def Foxhole.backup(options={})
     logger.debug('in backup')
     logger.debug('options ' + options.inspect)
-    logger.debug('options[:n] ' + options[:n])
+    logger.debug('options[:n] ' + options[:n].to_s)
     logger.debug('backup_dir' + backup_dir(options[:n]).to_path)
 
     # TODO super weird: I can't run backup_dir(options[:n]).mkpath for some reason
@@ -21,7 +21,11 @@ module Foxhole
     # a timestamp sessionstore_828928928.js
 
     timestamp = Time.now.utc.to_time.iso8601.gsub('-', '').gsub(':', '')
-    FileUtils.cp(sessionstore, backup_dir + "sessionstore_#{timestamp}.js")
+    begin
+      FileUtils.cp(sessionstore, backup_dir + "sessionstore_#{timestamp}.js")
+    rescue Errno::ENOENT
+      exit(2)
+    end
     logger.debug('out backup')
   end
 
@@ -30,9 +34,10 @@ module Foxhole
   def Foxhole.restore(options={})
     logger.debug('in restore')
     if options[:n] && options[:d]
-      puts "Restoring by name conflicts with restoring by date\n \
-              run foxhole restore with either -n or -d but not both"
-      return
+      # OK so right now this is being handled as an error condition, but I would
+      # rather handle it in PRE and have GLI call the help banner... but I couldn't
+      # figure out how to do that
+      exit(3)
     end
 
     salient_backup_dir = if options[:n]
@@ -60,10 +65,14 @@ module Foxhole
                            Pathname.new(backup_dir.parent) + chronological_dirs.sort.last
                          end
 
-    puts "salient_backup_dir: " + salient_backup_dir.inspect
+    logger.debug("salient_backup_dir: " + salient_backup_dir.inspect)
 
     # then find the most recent backup or the backup matching the given time
-    salient_backup = Pathname.new(salient_backup_dir) + salient_backup_dir.entries.sort.last
+    begin
+      salient_backup = Pathname.new(salient_backup_dir) + salient_backup_dir.entries.sort.last
+    rescue Errno::ENOENT
+      exit(4)
+    end
 
     FileUtils.cp(salient_backup, sessionstore)
     logger.debug('in out')
