@@ -13,22 +13,19 @@ require 'foxhole'
 
 include GLI::App
 
-program_desc "Backup and restore Firefox's sessionstore, so that you can recover your tab groups (panoramas) after a crash."
+program_desc """Provides more extensive backups of Firefox's sessionstore
+    file, so that you can recover your tab groups (panoramas) after a crash.
+"""
 
 version Foxhole::VERSION
-
-desc 'Describe some switch here'
-switch [:s,:switch]
-
-desc 'Describe some flag here'
-default_value 'the default'
-arg_name 'The name of the argument'
-flag [:f,:flagname]
 
 desc 'verbose'
 switch [:v, :verbose]
 
 desc 'Backup the current sessionstore'
+long_desc """Firefox's sessionstore files contains the information that makes
+up your panoramas (tab groups). Foxhole backs them up in chronological order
+to a special location in your home folder."""
 arg_name '' # backup take no particular args
 command :backup do |c|
 
@@ -62,9 +59,9 @@ command :restore do |c|
   c.arg_name 'Date'
   c.flag [:d, :date]
 
-  c.desc 'Restore the sessionstore from the given hour. If a date or name is also specified, both hour and date will be used.'
-  c.arg_name 'Hour'
-  c.flag [:h, :hour]
+# c.desc 'Restore the sessionstore from the given hour. If a date or name is also specified, both hour and date will be used.'
+# c.arg_name 'Hour'
+# c.flag [:h, :hour]
 
   c.action do |global_options,options,args|
 

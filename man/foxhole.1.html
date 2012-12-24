@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv='content-type' value='text/html;charset=utf8'>
+  <meta name='generator' value='Ronn/v0.7.3 (http://github.com/rtomayko/ronn/tree/0.7.3)'>
+  <title>foxhole.rb(1) - backup and restore Firefox sessionstores</title>
+  <style type='text/css' media='all'>
+  /* style: man */
+  body#manpage {margin:0}
+  .mp {max-width:100ex;padding:0 9ex 1ex 4ex}
+  .mp p,.mp pre,.mp ul,.mp ol,.mp dl {margin:0 0 20px 0}
+  .mp h2 {margin:10px 0 0 0}
+  .mp > p,.mp > pre,.mp > ul,.mp > ol,.mp > dl {margin-left:8ex}
+  .mp h3 {margin:0 0 0 4ex}
+  .mp dt {margin:0;clear:left}
+  .mp dt.flush {float:left;width:8ex}
+  .mp dd {margin:0 0 0 9ex}
+  .mp h1,.mp h2,.mp h3,.mp h4 {clear:left}
+  .mp pre {margin-bottom:20px}
+  .mp pre+h2,.mp pre+h3 {margin-top:22px}
+  .mp h2+pre,.mp h3+pre {margin-top:5px}
+  .mp img {display:block;margin:auto}
+  .mp h1.man-title {display:none}
+  .mp,.mp code,.mp pre,.mp tt,.mp kbd,.mp samp,.mp h3,.mp h4 {font-family:monospace;font-size:14px;line-height:1.42857142857143}
+  .mp h2 {font-size:16px;line-height:1.25}
+  .mp h1 {font-size:20px;line-height:2}
+  .mp {text-align:justify;background:#fff}
+  .mp,.mp code,.mp pre,.mp pre code,.mp tt,.mp kbd,.mp samp {color:#131211}
+  .mp h1,.mp h2,.mp h3,.mp h4 {color:#030201}
+  .mp u {text-decoration:underline}
+  .mp code,.mp strong,.mp b {font-weight:bold;color:#131211}
+  .mp em,.mp var {font-style:italic;color:#232221;text-decoration:none}
+  .mp a,.mp a:link,.mp a:hover,.mp a code,.mp a pre,.mp a tt,.mp a kbd,.mp a samp {color:#0000ff}
+  .mp b.man-ref {font-weight:normal;color:#434241}
+  .mp pre {padding:0 4ex}
+  .mp pre code {font-weight:normal;color:#434241}
+  .mp h2+pre,h3+pre {padding-left:0}
+  ol.man-decor,ol.man-decor li {margin:3px 0 10px 0;padding:0;float:left;width:33%;list-style-type:none;text-transform:uppercase;color:#999;letter-spacing:1px}
+  ol.man-decor {width:100%}
+  ol.man-decor li.tl {text-align:left}
+  ol.man-decor li.tc {text-align:center;letter-spacing:4px}
+  ol.man-decor li.tr {text-align:right;float:right}
+  </style>
+</head>
+<!--
+  The following styles are deprecated and will be removed at some point:
+  div#man, div#man ol.man, div#man ol.head, div#man ol.man.
+
+  The .man-page, .man-decor, .man-head, .man-foot, .man-title, and
+  .man-navigation should be used instead.
+-->
+<body id='manpage'>
+  <div class='mp' id='man'>
+
+  <div class='man-navigation' style='display:none'>
+    <a href="#NAME">NAME</a>
+    <a href="#SYNOPSIS">SYNOPSIS</a>
+    <a href="#DESCRIPTION">DESCRIPTION</a>
+    <a href="#OPTIONS">OPTIONS</a>
+    <a href="#EXAMPLES">EXAMPLES</a>
+    <a href="#FILES">FILES</a>
+    <a href="#AUTHOR">AUTHOR</a>
+  </div>
+
+  <ol class='man-decor man-head man head'>
+    <li class='tl'>foxhole.rb(1)</li>
+    <li class='tc'></li>
+    <li class='tr'>foxhole.rb(1)</li>
+  </ol>
+
+  <h2 id="NAME">NAME</h2>
+<p class="man-name">
+  <code>foxhole.rb</code> - <span class="man-whatis">backup and restore Firefox sessionstores</span>
+</p>
+
+<h2 id="SYNOPSIS">SYNOPSIS</h2>
+
+<p>foxhole [--version] [--help]</p>
+
+<pre><code>    backup [--name] | restore [--name|--date]
+</code></pre>
+
+<h2 id="DESCRIPTION">DESCRIPTION</h2>
+
+<p><strong>Foxhole</strong> protects your tab groups from Firefox crashes, stupid mistakes,
+and clandestine users. You can use the foxhole commandline utility to make
+quick and easy backups or your "sessionstore" file, and restore it just as
+easily in case of problems. The sessionstore file is what Firefox uses to
+keep track of all those tabs you have open, and while Firefox does maintain
+its own backups, tab groups are important enough to warrent extra care.</p>
+
+<p>By default, foxhole keeps backups in a folder in a ".foxhole" folder in your
+home directory. These backups are kept in chronological order, within folders
+named for the date of the backup. Foxhole uses YYYY.MM.DD as its date format,
+so that they folders can easily be grouped by year or sorted chronologically.</p>
+
+<h2 id="OPTIONS">OPTIONS</h2>
+
+<h3 id="GLOBAL-OPTIONS">GLOBAL OPTIONS</h3>
+
+<dl>
+<dt><code>--version</code></dt><dd>Prints the Foxhole suite version number that the foxhole program came from.</dd>
+<dt class="flush"><code>--help</code></dt><dd>Prints the synopsis and a lits of foxhole commands. Both the backup and
+restore commands accept the --help option, which displays the synopsis
+and options specific to those commands.</dd>
+</dl>
+
+
+<h3 id="BACKUP-OPTIONS">BACKUP OPTIONS</h3>
+
+<dl>
+<dt><code>--name=NAME</code></dt><dd>Backs up the current sessionstore under a particular name. This name can
+be used later to restore the session out of chronological order. This way
+a savvy user can make special custom session stores for sharing with other
+users, or to partition different browsing sessions.</dd>
+</dl>
+
+
+<h3 id="RESTORE-OPTIONS">RESTORE OPTIONS</h3>
+
+<dl>
+<dt><code>--name=NAME</code></dt><dd>Restores the most recent sessionstore backed up with the given name. If no
+such sessionstore exists, then foxhole will fail. Note that this will always
+restore the most recent sessionstore with the given name: if more than
+one sessionstore has been backed up under the same name, and some older
+sessionstore file is desired, then this option must be combined with --hour.</dd>
+<dt><code>--date=DATE</code></dt><dd><p>Date and Name are mutually exclusive. By default restore restores the most
+recently saved session store. If given a particular date, it will instead
+attempt to restore the most recent sessionstore file backed up on the given
+date. As above, if the date given does not exist in the foxhole directory,
+then nothing will come of this. Also similar to --name, if a particular
+sessionstore from the given date is desired, then this option should be
+combined with --hour.</p>
+
+<p>The given date is parsed with Ruby's DateTime::parse method. The format
+recommended by the help banner is YYYY/MM/DD, but this is not necessary.
+The parse method used will recognize dates in many formats: try a few to
+see!</p></dd>
+<dt><code>--hour=HOUR</code></dt><dd>Oh unimplemented!</dd>
+<dt><code>-t</code>, <code>--tabula-rasa</code></dt><dd>Also unimplemented.</dd>
+</dl>
+
+
+<h2 id="EXAMPLES">EXAMPLES</h2>
+
+<p>Backup the current sessionstore</p>
+
+<p>  $ foxhole backup</p>
+
+<p>Create a backup with a given name</p>
+
+<p>  $ foxhole backup --name=special_name</p>
+
+<p>Restore from that backup</p>
+
+<p>  $ foxhole restore --name=special_name</p>
+
+<p>Restore a particular sessionstore saved under the given name</p>
+
+<p>  $ foxhole restore --name=special_name --hour="20:59:25"</p>
+
+<p>Blank the sessionstore.</p>
+
+<p>  $ foxhole restore -t</p>
+
+<h2 id="FILES">FILES</h2>
+
+<p><code>~/.foxhole/</code> is the default home of the sessionstore backups.</p>
+
+<h2 id="AUTHOR">AUTHOR</h2>
+
+<p>This app was made by various authors.</p>
+
+
+  <ol class='man-decor man-foot man foot'>
+    <li class='tl'></li>
+    <li class='tc'>December 2012</li>
+    <li class='tr'>foxhole.rb(1)</li>
+  </ol>
+
+  </div>
+</body>
+</html>
