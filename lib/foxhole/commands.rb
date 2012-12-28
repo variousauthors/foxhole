@@ -1,5 +1,12 @@
 module Foxhole
 
+  module EXIT_CODES
+    SESSIONSTORE_MISSING = 2
+    NAME_DATE_CONFLICT = 3
+    BACKUP_MISSING = 4
+
+  end
+
   def Foxhole.logger
     @logger ||= Logger.new(STDOUT)
 
@@ -24,7 +31,7 @@ module Foxhole
     begin
       FileUtils.cp(sessionstore, backup_dir + "sessionstore_#{timestamp}.js")
     rescue Errno::ENOENT
-      exit(2)
+      exit(SESSIONSTORE_MISSING)
     end
     logger.debug('out backup')
   end
@@ -37,7 +44,7 @@ module Foxhole
       # OK so right now this is being handled as an error condition, but I would
       # rather handle it in PRE and have GLI call the help banner... but I couldn't
       # figure out how to do that
-      exit(3)
+      exit(NAME_DATE_CONFLICT)
     end
 
     salient_backup_dir = if options[:n]
@@ -71,7 +78,7 @@ module Foxhole
     begin
       salient_backup = Pathname.new(salient_backup_dir) + salient_backup_dir.entries.sort.last
     rescue Errno::ENOENT
-      exit(4)
+      exit(BACKUP_MISSING)
     end
 
     FileUtils.cp(salient_backup, sessionstore)

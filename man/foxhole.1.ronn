@@ -20,6 +20,12 @@ home directory. These backups are kept in chronological order, within folders
 named for the date of the backup. Foxhole uses YYYY.MM.DD as its date format,
 so that they folders can easily be grouped by year or sorted chronologically.
 
+### EXIT STATUS
+  * 1: exit with problems (some... problems)
+  * 2: sessionstore file couldn't be located in the firefox user's profile directory.
+  * 3: --name and --date were used in combination, which is not OK.
+  * 4: given the commandline options, no appropriate backup file could be found.
+
 ## OPTIONS
 
 ### GLOBAL OPTIONS
@@ -83,6 +89,8 @@ Restore a particular sessionstore saved under the given name
 Blank the sessionstore.
 
   $ foxhole restore -t
+
+## EXIT STATUS
 
 ## FILES
 

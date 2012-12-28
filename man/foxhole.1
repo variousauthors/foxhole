@@ -25,6 +25,22 @@ foxhole [\-\-version] [\-\-help]
 .P
 By default, foxhole keeps backups in a folder in a "\.foxhole" folder in your home directory\. These backups are kept in chronological order, within folders named for the date of the backup\. Foxhole uses YYYY\.MM\.DD as its date format, so that they folders can easily be grouped by year or sorted chronologically\.
 .
+.SS "EXIT STATUS"
+.
+.IP "\(bu" 4
+1: exit with problems (some\.\.\. problems)
+.
+.IP "\(bu" 4
+2: sessionstore file couldn\'t be located in the firefox user\'s profile directory\.
+.
+.IP "\(bu" 4
+3: \-\-name and \-\-date were used in combination, which is not OK\.
+.
+.IP "\(bu" 4
+4: given the commandline options, no appropriate backup file could be found\.
+.
+.IP "" 0
+.
 .SH "OPTIONS"
 .
 .SS "GLOBAL OPTIONS"
@@ -93,6 +109,8 @@ Blank the sessionstore\.
 .
 .P
 $ foxhole restore \-t
+.
+.SH "EXIT STATUS"
 .
 .SH "FILES"
 \fB~/\.foxhole/\fR is the default home of the sessionstore backups\.

@@ -58,6 +58,7 @@
     <a href="#DESCRIPTION">DESCRIPTION</a>
     <a href="#OPTIONS">OPTIONS</a>
     <a href="#EXAMPLES">EXAMPLES</a>
+    <a href="#EXIT-STATUS">EXIT STATUS</a>
     <a href="#FILES">FILES</a>
     <a href="#AUTHOR">AUTHOR</a>
   </div>
@@ -93,6 +94,16 @@ its own backups, tab groups are important enough to warrent extra care.</p>
 home directory. These backups are kept in chronological order, within folders
 named for the date of the backup. Foxhole uses YYYY.MM.DD as its date format,
 so that they folders can easily be grouped by year or sorted chronologically.</p>
+
+<h3 id="EXIT-STATUS">EXIT STATUS</h3>
+
+<ul>
+<li>1: exit with problems (some... problems)</li>
+<li>2: sessionstore file couldn't be located in the firefox user's profile directory.</li>
+<li>3: --name and --date were used in combination, which is not OK.</li>
+<li>4: given the commandline options, no appropriate backup file could be found.</li>
+</ul>
+
 
 <h2 id="OPTIONS">OPTIONS</h2>
 
@@ -162,6 +173,8 @@ see!</p></dd>
 <p>Blank the sessionstore.</p>
 
 <p>  $ foxhole restore -t</p>
+
+<h2 id="EXIT-STATUS">EXIT STATUS</h2>
 
 <h2 id="FILES">FILES</h2>
 

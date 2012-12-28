@@ -88,14 +88,17 @@ post do |global,command,options,args|
 end
 
 on_error do |exception|
+  # if the exception comes from a call to exit(1), then it will have a status
+  # otherwise, it is an unexpected error and should be reported
   if exception.methods.include?(:status)
     case exception.status.to_int
-    when 2 then STDERR::puts "There was no sessionstore data to backup..."
-    when 3 then STDERR::puts "--name and --date are mutually exclusive. Maybe run `foxhole restore --help` ?"
-    when 4 then STDERR::puts "There is no backup with the given name."
+    when SESSIONSTORE_MISSING then STDERR::puts "There was no sessionstore data to backup..."
+    when NAME_DATE_CONFLICT then STDERR::puts "--name and --date are mutually exclusive. Maybe run `foxhole restore --help` ?"
+    when BACKUP_MISSING then STDERR::puts "There is no backup with the given name."
     else STDERR::puts exception.message
     end
   else
+    # this should probably create an error log and tell the user to report it
     STDERR::puts "You found a new bug: " 
     STDERR::puts "  " + exception.message
     STDERR::puts "  " + exception.inspect
