@@ -22,6 +22,26 @@ version Foxhole::VERSION
 desc 'verbose'
 switch [:v, :verbose]
 
+    { :profile_dir => "",
+      :backup_dir => "~/.foxhole" }
+desc 'specify the firefox profile to be used'
+long_desc ''
+arg_name 'USER'
+default_value "default"
+flag [:p, :profile]
+
+desc 'specify the firefox profiles.ini file to use for recovering profile data.'
+long_desc ''
+arg_name 'DIRECTORY'
+default_value "~/.mozilla/firefox/"
+flag [:c, :config]
+
+desc 'specify the "fox hole", the root directory where backups will live'
+long_desc ''
+arg_name 'DIRECTORY'
+default_value "~/.foxhole"
+flag [:f, :foxhole]
+
 desc 'Backup the current sessionstore'
 long_desc """Firefox's sessionstore files contains the information that makes
 up your panoramas (tab groups). Foxhole backs them up in chronological order
@@ -30,13 +50,14 @@ arg_name '' # backup take no particular args
 command :backup do |c|
 
   c.desc 'Give the current sessionstore a special name. You can restore it by using restore -n'
-  c.arg_name 'Name'
+  c.arg_name 'NAME'
   c.flag [:n, :name]
 
   c.action do |global_options,options,args|
 
     Foxhole.logger.level = Logger::INFO unless global_options[:v]
     Foxhole.logger.debug(options)
+    Foxhole.config(global_options)
 
     Foxhole.backup(options)
 
@@ -67,6 +88,7 @@ command :restore do |c|
 
     Foxhole.logger.level = Logger::INFO unless global_options[:v]
     Foxhole.logger.debug(options)
+    Foxhole.config(global_options)
     Foxhole.restore(options)
     puts "restore command ran"
   end

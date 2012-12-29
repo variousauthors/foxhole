@@ -16,11 +16,11 @@ module Foxhole
     logger.debug('in backup')
     logger.debug('options ' + options.inspect)
     logger.debug('options[:n] ' + options[:n].to_s)
-    logger.debug('backup_dir' + backup_dir(options[:n]).to_path)
 
-    # TODO super weird: I can't run backup_dir(options[:n]).mkpath for some reason
+    # look in the .foxhole and ensure that today's date is there
+    # TODO so weird that I can't use backup_dir(options[:name]).mkpath
+    backup_dir(options[:name])
 
-    # look in the .foxhole and see if today's date is there
     backup_dir.mkpath unless backup_dir.exist?
     logger.debug('  backing up to: ' + backup_dir.to_path)
 
@@ -28,6 +28,7 @@ module Foxhole
     # a timestamp sessionstore_828928928.js
 
     timestamp = Time.now.utc.to_time.iso8601.gsub('-', '').gsub(':', '')
+    puts backup_dir.class
     begin
       FileUtils.cp(sessionstore, backup_dir + "sessionstore_#{timestamp}.js")
     rescue Errno::ENOENT
@@ -85,30 +86,37 @@ module Foxhole
     logger.debug('in out')
   end
 
-  def Foxhole.config
-    # currently the only config is the random string firefox uses
-    # as your profile directory
-    #
-    # later on we can parse firefox/profiles.ini to get the random
-    # string
+  def Foxhole.config(global_options = {})
+    # configure Foxhole with the given set of global options
 
-    { :profile_dir => "~/.mozilla/firefox/32zkg1d3.default",
-      :backup_dir => "~/.foxhole" }
+    # foxhole will get the profile directory from firefox's the profiles.ini file
+    @@config ||= begin
+                   profile = IniParse.parse( File.read(File.expand_path(global_options[:config] + "profiles.ini")) )
+                   profile.each do |section|
+                     if section["Name"] == global_options[:profile]
+                       global_options[:profile] = global_options[:config] + section["Path"]
+                     end
+                   end
+
+                   global_options
+                 end
   end
 
   # returns a pathname object that points to the given directory,
   # or to the directory with the most recent date
   def Foxhole.backup_dir(directory=nil)
-    logger.debug('in backup_dir with ' + directory.to_s)
+    logger.debug("in backup_dir with: ")
+    logger.debug("  directory: " + directory.to_s)
+    logger.debug("  foxhole: " + config[:foxhole].to_s)
     @@backup_dir ||= begin
       if directory.nil?
         logger.debug('dir was nil, using date')
         datetime = DateTime::now
         backup_date = datetime.strftime("%Y.%m.%d")
 
-        backup_dirpath = Pathname.new(File.expand_path(config[:backup_dir])) + backup_date
+        backup_dirpath = Pathname.new(File.expand_path(config[:foxhole])) + backup_date
       else
-        backup_dirpath = Pathname.new(File.expand_path(config[:backup_dir])) + directory
+        backup_dirpath = Pathname.new(File.expand_path(config[:foxhole])) + directory
         logger.debug('backup_dirpath: ' + backup_dirpath.to_path)
       end
 
@@ -117,7 +125,7 @@ module Foxhole
   end
 
   def Foxhole.sessionstore
-    @@sessionstore ||= Pathname.new(File.expand_path(config[:profile_dir])) + "sessionstore.js"
+    @@sessionstore ||= Pathname.new(File.expand_path(config[:profile])) + "sessionstore.js"
   end
 
   def Foxhole.render(sessionstore)

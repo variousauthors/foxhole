@@ -1,6 +1,7 @@
 require 'foxhole/version'
 require 'foxhole/commands'
 require 'logger'
+require 'iniparse'
 
 
 # OK so all this really needs to do is copy the sessionstore.js files
