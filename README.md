@@ -15,7 +15,7 @@ easily in case of problems. The sessionstore file is what Firefox uses to
 keep track of all those tabs you have open, and while Firefox does maintain
 its own backups, tab groups are important enough to warrent extra care.
 
-By default, foxhole keeps backups in a folder in a ".foxhole" folder in your
+By default, foxhole keeps backups in a folder named ".foxhole" in your
 home directory. These backups are kept in chronological order, within folders
 named for the date of the backup. Foxhole uses YYYY.MM.DD as its date format,
 so that they folders can easily be grouped by year or sorted chronologically.
